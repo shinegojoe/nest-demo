@@ -8,15 +8,26 @@ describe('AppController', () => {
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService],
+      providers: [{
+        provide: AppService, useValue: {
+          getHello: jest.fn(()=> {
+            const p = new Promise<string>((resolve)=> {
+              resolve("Hello World!");
+            });
+
+            return p;
+          })
+        }
+      }],
     }).compile();
 
     appController = app.get<AppController>(AppController);
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return "Hello World!"', async() => {
+      const res = await appController.getHello();
+      expect(res).toBe('Hello World!');
     });
   });
 });
