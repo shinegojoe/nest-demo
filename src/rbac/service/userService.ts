@@ -4,7 +4,7 @@ import { InjectRepository  } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DataSource } from 'typeorm';
 import { Module } from '@nestjs/core/injector/module';
-import { User } from '../../entity/User';
+import { User } from '../../entity/rbac/User';
 
 
 @Injectable()
@@ -22,6 +22,15 @@ export class UserService {
     console.log("res: ", res);
     return res;
   }
+
+  xx(): Promise<string> {
+    const p = new Promise<string>((resolve, reject)=> {
+      resolve("xx");
+    })
+    return p;
+  }
+
+
 
   
 }
