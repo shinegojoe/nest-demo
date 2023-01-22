@@ -3,20 +3,30 @@ import { ActionService } from '../service/actionService';
 import { Action } from '../../entity/rbac/Action';
 import { DeleteResult, InsertResult } from 'typeorm';
 import { ApiBody, ApiParam } from '@nestjs/swagger';
+import { LogicErrorResponse } from '../../response/logicErrorResp';
+import { errorCode } from '../../response/errorCode';
 
 @Controller('actions')
 export class ActionController {
   constructor(private readonly actionService: ActionService) {}
 
   @Get('/list')
-  list(): Promise<Array<Action>> {
-    return this.actionService.list();
+  async list(): Promise<Array<Action>> {
+    const res: Array<Action> = await this.actionService.list();
+    return res;
   }
 
   @Get('/get/:id')
   @ApiParam({name: 'id', required: true, description: 'either an integer for the project id or a string for the project name', schema: { oneOf: [{type: 'string'}, {type: 'integer'}]}})
-  get(@Param('id') id: number): Promise<Action> {
-    return this.actionService.get(id);
+  async get(@Param('id') id: number): Promise<Action | LogicErrorResponse> {
+    const res = await this.actionService.get(id);
+    if(res === null) {
+      const logicErrorResp = new LogicErrorResponse(errorCode.NOT_FOUND, "action not found");
+      return logicErrorResp;
+    } else {
+      return res;
+    }
+
   }
 
   @Delete('/delete/:id')
