@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository  } from '@nestjs/typeorm';
-import { DeleteResult, Repository, InsertResult } from 'typeorm';
+import { DeleteResult, Repository, InsertResult, UpdateResult } from 'typeorm';
 import { Action } from '../../entity/rbac/Action';
 
 @Injectable()
@@ -34,10 +34,10 @@ export class ActionService {
     return res;
   }
 
-  async update(body: Action): Promise<Action> {
+  async update(body: Action): Promise<UpdateResult> {
 
     // const r = AppDataSource.getRepository(User);
-    const res = await this.usersRepository.save(body);
+    const res = await this.usersRepository.update(body.id, body);
     console.log("res: ", res);
     return res;
   }
