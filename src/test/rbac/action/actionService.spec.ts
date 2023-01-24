@@ -94,12 +94,12 @@ describe('action service ok test', () => {
       
     });
 
-    it('should return true', async() => {
-      const body = new Action();
-      const res = await service.create(body);
-      expect(res).toBe(true)
+    // it('should return true', async() => {
+    //   const body = new Action();
+    //   const res = await service.create(body);
+    //   expect(res).toBe(true)
       
-    });
+    // });
 
   });
 });

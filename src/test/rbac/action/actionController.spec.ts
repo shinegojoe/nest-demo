@@ -54,6 +54,10 @@ class MockActionLogicErrorService {
         }
     }
 
+    create(action: Action) {
+        return null;
+    }
+
 }
 
 describe('action controller ok test', () => {
@@ -150,7 +154,13 @@ describe('action controller logic error test', () => {
             const res = await actionController.update(action);
             expect(res).toEqual(resp);
         });
-        // 
+        
+        it('should return already exists', async () => {
+            const resp = new LogicErrorResponse(errorCode.ALREADY_EXISTS, "action already exists");
+            const action = new Action();
+            const res = await actionController.create(action);
+            expect(res).toEqual(resp);
+        });
 
     });
 });

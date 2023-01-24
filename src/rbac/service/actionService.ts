@@ -19,19 +19,27 @@ export class ActionService {
     return res;
   }
 
-  get(id: number): Promise<Action> {
-    const res  = this.usersRepository.findOneBy(
+  async get(id: number): Promise<Action> {
+    const res  = await this.usersRepository.findOneBy(
       {id: id}
     );
     return res;
   }
 
-  async create(body: Action): Promise<InsertResult> {
+  async create(body: Action): Promise<InsertResult | null> {
 
     // const r = AppDataSource.getRepository(User);
-    const res = await this.usersRepository.insert(body);
-    console.log("res: ", res);
-    return res;
+    const item = await this.usersRepository.findOneBy(
+      {name: body.name}
+    );
+    console.log("item: ", item);
+    if(item === null) {
+      const res = await this.usersRepository.insert(body);
+      console.log("create: ", res);
+      return res;
+    } else {
+      return null;
+    }
   }
 
   async update(body: Action): Promise<UpdateResult> {
