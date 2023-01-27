@@ -1,44 +1,67 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from '../../../rbac/controller/userController';
 import { UserService } from '../../../rbac/service/userService';
+import { CreateResponse, UpdateResponse, DeleteResponse, LogicErrorResponse } from '../../../response/Resp';
+import { MockDataSource } from '../../common/mockDataSource';
+import { MockLoggerService } from '../../common/mockLogger';
+import { LoggerService } from '../../../logger/logger.service';
+import { DataSource, QueryRunner } from 'typeorm';
+import { SetUserRoleDTO } from '../../../rbac/dto/userRoleDTO';
+import { User } from '../../../entity/rbac/User';
+import { errorCode, errorMessage } from '../../../response/errorCode';
+import { NullObject } from '../../../utils/NullObject';
 
-class MyServiceStubClass {
-  all() {
-    return 123;
+
+class MockUserService {
+  list() {
+    return [];
   }
-  xx() {
-    // const p = new Promise((resolve, reject)=> {
-    //   throw new Error();
 
-    //   // reject(new Error());
-    // })
-    // return p;
-    throw new Error();
+  create(body: User) {
+    return {
+      raw: {}
+    }
+  }
 
+  setUserRole(body: SetUserRoleDTO) {
+    return true;
+
+  }
+
+  updateUserRole(body: SetUserRoleDTO) {
+    return true;
   }
 
 }
 
-describe('AppController', () => {
+class MockLogicErrorUserService {
+  create(body: User) {
+    return new NullObject();
+  }
+
+  setUserRole(body: SetUserRoleDTO) {
+    throw new Error();
+
+  }
+
+  updateUserRole(body: SetUserRoleDTO) {
+    throw new Error();
+  }
+
+}
+
+describe('AppController ok test', () => {
   let userController: UserController;
-  let userController2: UserController;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
       providers: [
-        // {
-        //   provide: UserService, useValue: {
-        //     all: jest.fn(() => {
-        //       const p = new Promise<string>((resolve) => {
-        //         resolve("Hello World!");
-        //       });
+        { provide: UserService, useClass: MockUserService },
+        { provide: DataSource, useClass: MockDataSource },
+        { provide: LoggerService, useClass: MockLoggerService }
 
-        //       return p;
-        //     })
-        //   }
-        // },
-        { provide: UserService, useClass: MyServiceStubClass }],
+      ],
     }).compile();
 
 
@@ -46,23 +69,78 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', async () => {
-      const res = await userController.all();
-      expect(res).toBe(123);
+    it('should return user list', async () => {
+      const res = await userController.list();
+      expect(res).toHaveLength(0)
     });
 
-    it("xxx", async () => {
-      const res = await userController.xx();
-      // const res = () => {
-      //   throw new TypeError();
-      // };
-      // expect(res).toThrowError(TypeError);
-      // expect(res).toBe(123);
-      // expect(() => { userController.xx(); }).toThrow(Error);
-      // expect(() => { userController.xx(); }).toThrow(Error);
-      expect(res).toBe("err");
+    it('should return create response', async () => {
+      const resp = new CreateResponse();
+      const body = new User();
+      const res = await userController.create(body);
+      expect(res).toEqual(resp);
+    });
+
+    it('should return create response', async () => {
+      const resp = new CreateResponse();
+      const body = new SetUserRoleDTO();
+      const res = await userController.setUserRole(body);
+      expect(res).toEqual(resp);
+    });
+
+    it('should return update response', async () => {
+      const resp = new UpdateResponse();
+      const body = new SetUserRoleDTO();
+      const res = await userController.updateUserRole(body);
+      expect(res).toEqual(resp);
+    });
 
 
-    })
+  });
+});
+
+
+describe('AppController error test', () => {
+  let userController: UserController;
+
+  beforeEach(async () => {
+    const app: TestingModule = await Test.createTestingModule({
+      controllers: [UserController],
+      providers: [
+        { provide: UserService, useClass: MockLogicErrorUserService },
+        { provide: DataSource, useClass: MockDataSource },
+        { provide: LoggerService, useClass: MockLoggerService }
+
+      ],
+    }).compile();
+
+
+    userController = app.get<UserController>(UserController);
+  });
+
+  describe('root', () => {
+
+    it('should return Logic error response', async () => {
+      const resp = new LogicErrorResponse(errorCode.ALREADY_EXISTS, `user ${errorMessage[errorCode.ALREADY_EXISTS]}`);
+      const body = new User();
+      const res = await userController.create(body);
+      expect(res).toEqual(resp);
+    });
+
+    it('should return Logic error response', async () => {
+      const resp = new LogicErrorResponse(errorCode.ROLL_BACK, errorMessage[errorCode.ROLL_BACK]);
+      const body = new SetUserRoleDTO();
+      const res = await userController.setUserRole(body);
+      expect(res).toEqual(resp);
+    });
+
+    it('should return Logic error response', async () => {
+      const resp = new LogicErrorResponse(errorCode.ROLL_BACK, errorMessage[errorCode.ROLL_BACK]);
+      const body = new SetUserRoleDTO();
+      const res = await userController.updateUserRole(body);
+      expect(res).toEqual(resp);
+    });
+
+
   });
 });
