@@ -9,6 +9,13 @@ class LogicErrorResponse {
     }
 }
 
+class SuccssResponse {
+    status: string
+    constructor() {
+        this.status = "success";
+    }
+}
+
 class CreateResponse {
     status: string
     constructor() {
@@ -33,5 +40,5 @@ class DeleteResponse extends CreateResponse {
 
 
 
-export { LogicErrorResponse, CreateResponse, UpdateResponse, DeleteResponse }
+export { LogicErrorResponse, CreateResponse, UpdateResponse, DeleteResponse, SuccssResponse }
 
