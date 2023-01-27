@@ -2,7 +2,9 @@ import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { User } from "./entity/rbac/User"
 import { Action } from './entity/rbac/Action';
+import { Role } from './entity/rbac/Role';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Injectable } from "@nestjs/common";
 
 
 // export const AppDataSource = new DataSource({
@@ -30,7 +32,7 @@ export const AppDataSource = TypeOrmModule.forRoot({
     schema: "test123",
     synchronize: true,
     logging: false,
-    entities: [User, Action],
+    entities: [User, Action, Role],
     migrations: [],
     subscribers: [],
 })

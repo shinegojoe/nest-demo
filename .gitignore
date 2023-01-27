@@ -6,3 +6,5 @@ tmp/
 temp/
 dist/
 error.log
+/log
+.env

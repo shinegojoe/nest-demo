@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,6 +8,8 @@ import { DataSource } from 'typeorm';
 import { RBACModule } from './rbac/rbac.module';
 import { ErrorTestModule }  from './errorTest/errorTest.module';
 import { LoggerModule } from './logger/logger.module';
+import { AuthMiddleware } from './middleware/authMiddleware';
+import { LoginModule } from './login/login.module';
 
 @Module({
   imports: [
@@ -15,7 +17,8 @@ import { LoggerModule } from './logger/logger.module';
     TypeOrmModule.forFeature([User]),
     RBACModule,
     ErrorTestModule,
-    LoggerModule
+    LoggerModule,
+    LoginModule
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -41,6 +44,14 @@ import { LoggerModule } from './logger/logger.module';
 //   providers: [AppService],
 // })
 
-export class AppModule {
- 
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes('');
+  }
+
+  constructor(private dataSource: DataSource){
+    
+  }
 }

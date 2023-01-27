@@ -1,6 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as session from 'express-session';
+require('dotenv').config();
+
 
 // import { userSource } from './index';
 
@@ -18,6 +21,13 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+  // console.log("xx: ", process.env.qq);
+  app.use(
+    session({
+      secret: 'my-secret',
+      resave: false,
+      saveUninitialized: false,
+    }),)
   await app.listen(3000);
 }
 bootstrap();
