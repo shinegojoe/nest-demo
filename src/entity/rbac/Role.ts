@@ -12,4 +12,8 @@ export class Role {
     @Column()
     name: string;
 
+    @ApiProperty()
+    @Column()
+    module: string
+
 }
