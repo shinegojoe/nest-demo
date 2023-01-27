@@ -10,7 +10,9 @@ import { SetUserRoleDTO } from '../../../rbac/dto/userRoleDTO';
 import { User } from '../../../entity/rbac/User';
 import { errorCode, errorMessage } from '../../../response/errorCode';
 import { NullObject } from '../../../utils/NullObject';
-
+import { RoleService } from '../../../rbac/service/roleService';
+import { GetRoleActionVO } from '../../../rbac/vo/roleActionVO';
+import { UserRoleActionVO, UserRoleVO } from '../../../rbac/vo/userRoleVO';
 
 class MockUserService {
   list() {
@@ -32,6 +34,11 @@ class MockUserService {
     return true;
   }
 
+  getRolesById(id: number) {
+    const user = new User();
+    return new UserRoleVO(user, []);
+  }
+
 }
 
 class MockLogicErrorUserService {
@@ -48,6 +55,22 @@ class MockLogicErrorUserService {
     throw new Error();
   }
 
+  getRolesById(id: number) {
+    return new NullObject();
+  }
+
+}
+
+
+class MockRoleService {
+  getActionsById(id: number) {
+    const vo = new GetRoleActionVO();
+
+  }
+}
+
+class MockRoleLogicErrorService {
+  
 }
 
 describe('AppController ok test', () => {
@@ -59,7 +82,8 @@ describe('AppController ok test', () => {
       providers: [
         { provide: UserService, useClass: MockUserService },
         { provide: DataSource, useClass: MockDataSource },
-        { provide: LoggerService, useClass: MockLoggerService }
+        { provide: LoggerService, useClass: MockLoggerService },
+        { provide: RoleService, useClass: MockRoleService }
 
       ],
     }).compile();
@@ -95,6 +119,15 @@ describe('AppController ok test', () => {
       expect(res).toEqual(resp);
     });
 
+    it('should return UserRoleActionVO ', async () => {
+      const resp = new UserRoleActionVO();
+      resp.user = new User();
+      const res = await userController.getRoleActionListById(123);
+      expect(res).toEqual(resp);
+    });
+
+
+
 
   });
 });
@@ -109,7 +142,9 @@ describe('AppController error test', () => {
       providers: [
         { provide: UserService, useClass: MockLogicErrorUserService },
         { provide: DataSource, useClass: MockDataSource },
-        { provide: LoggerService, useClass: MockLoggerService }
+        { provide: LoggerService, useClass: MockLoggerService },
+        { provide: RoleService, useClass: MockRoleLogicErrorService }
+
 
       ],
     }).compile();
@@ -138,6 +173,13 @@ describe('AppController error test', () => {
       const resp = new LogicErrorResponse(errorCode.ROLL_BACK, errorMessage[errorCode.ROLL_BACK]);
       const body = new SetUserRoleDTO();
       const res = await userController.updateUserRole(body);
+      expect(res).toEqual(resp);
+    });
+
+    it('should return Logic error response', async () => {
+      const resp = new LogicErrorResponse(errorCode.NOT_FOUND, errorMessage[errorCode.NOT_FOUND]);
+      // const body = new SetUserRoleDTO();
+      const res = await userController.getRoleActionListById(123);
       expect(res).toEqual(resp);
     });
 

@@ -1,5 +1,6 @@
 import { Role } from '../../entity/rbac/Role';
 import { User } from '../../entity/rbac/User';
+import { GetRoleActionVO } from './roleActionVO';
 
 
 class UserRoleVO {
@@ -11,6 +12,11 @@ class UserRoleVO {
     }
 }
 
+class UserRoleActionVO {
+    user: User
+    roleList: Array<GetRoleActionVO> = []
+}
 
-export { UserRoleVO }
+
+export { UserRoleVO, UserRoleActionVO }
 

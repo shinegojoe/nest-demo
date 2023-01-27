@@ -8,6 +8,7 @@ import { User } from '../../entity/rbac/User';
 import { NullObject } from '../../utils/NullObject';
 import { SetUserRoleDTO } from '../dto/userRoleDTO';
 import { errorCode, errorMessage } from '../../response/errorCode';
+import { UserRoleVO } from '../vo/userRoleVO';
 
 
 @Injectable()
@@ -60,6 +61,19 @@ export class UserService {
       await queryRunner.manager.query(sql, [body.user.id, rId]);
     }
     return true;
+
+  }
+
+  async getRolesById(id: number): Promise<UserRoleVO | NullObject> {
+    const user = await this.userRepository.findOneBy({id: id});
+    if(user === null) {
+      return new NullObject();
+    }
+    const sql = `select r."name" , r.id  from ${this.schema}.user_role ur  inner join ${this.schema}."role" r on ur.r_id = r.id and ur.u_id=$1`;
+    const roleList = await this.userRepository.query(sql, [id]);
+    const vo = new UserRoleVO(user, roleList);
+    return vo;
+    
 
   }
 

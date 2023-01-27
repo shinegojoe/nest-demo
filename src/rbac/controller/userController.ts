@@ -16,6 +16,7 @@ import { LoggerService } from '../../logger/logger.service';
 import { AuthDecorator } from '../../decorator/authDecorator';
 import { Request } from 'supertest';
 import { controllerAuthMap } from '../../utils/controllerAuthMap';
+import { UserRoleVO, UserRoleActionVO } from '../vo/userRoleVO';
 
 const name = "user";
 
@@ -26,7 +27,7 @@ export class UserController {
   private logger;
 
   constructor(private readonly userService: UserService, private dataSource: DataSource,
-    private loggerService: LoggerService) {
+    private loggerService: LoggerService, private roleService: RoleService) {
       this.logger = this.loggerService.getLogger();
     }
 
@@ -174,17 +175,42 @@ export class UserController {
   @ApiOperation(UserDoc.getActionsByIdApiOperation)
   @ApiParam(UserDoc.getActionsByIdApiParam)
   @ApiResponse(UserDoc.getActionsByIdApiResponse)
-  @Get('/getActionsById/:id')
-  async getActionsById(@Param('id') id: number): Promise<LogicErrorResponse | GetRoleActionVO> {
-    // const res = await this.roleService.getActionsById(id);
-    // if (res.role === null) {
-    //   const resp: LogicErrorResponse = new LogicErrorResponse(errorCode.NOT_FOUND, "role not found");
-    //   return resp;
+  @Get('/getRolesById/:id')
+  async getRolesById(@Param('id') id: number): Promise<LogicErrorResponse | UserRoleVO> {
+    const vo  = await this.userService.getRolesById(id);
+    if( vo instanceof NullObject) {
+      return new LogicErrorResponse(errorCode.NOT_FOUND, errorMessage[errorCode.NOT_FOUND]);
 
-    // } else {
-    //   return res;
-    // }
-    return;
+    } else { 
+      return vo;
+    }
+  }
+
+
+
+  @ApiOperation(UserDoc.getRoleActionListByIdApiOperation)
+  @ApiParam(UserDoc.getRoleActionLisApiParam)
+  @ApiResponse(UserDoc.getRoleActionListByIdApiResponse)
+  @Get('/getRoleActionListById/:id')
+  async getRoleActionListById(@Param('id') id: number): Promise<UserRoleActionVO | LogicErrorResponse> {
+    
+    const userRoleVO  = await this.userService.getRolesById(id);
+    if(userRoleVO instanceof NullObject) {
+      return new LogicErrorResponse(errorCode.NOT_FOUND, errorMessage[errorCode.NOT_FOUND]);
+
+    } else {
+      const res = new UserRoleActionVO();
+      res.user = userRoleVO.user;
+      const roleList = userRoleVO.roleList;
+      for(let role of roleList) {
+        const roleActionVO = await this.roleService.getActionsById(role.id);
+        res.roleList.push(roleActionVO);
+      }
+      return res;
+
+
+    }
+
   }
 
 }

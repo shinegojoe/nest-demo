@@ -67,4 +67,12 @@ export class UserDoc {
         example: {}
     }};
 
+
+    static getRoleActionListByIdApiOperation = { description: "get user roels and actions" };
+    static getRoleActionLisApiParam = { name: 'id', required: true, description: '' };;
+    static getRoleActionListByIdApiResponse = {  status: 200, description: '', schema: {
+        type: "json",
+        example: {}
+    }};
+
 }
