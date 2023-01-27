@@ -68,6 +68,15 @@ class RoleDoc {
 
 
 
+    static updateRoleActionApiOperation = { description: "update a RoleAction" };
+    static updateRoleActionApiBody = { description: "", type: SetRoleActionDTO };
+    static updateRoleActionApiResponse = {  status: 200, description: '', schema: {
+        type: "json",
+        example: {}
+    }};
+
+
+
 
 
 
