@@ -1,10 +1,10 @@
 
 
 class AuthModel {
-    role: string = ""
+    module: string = ""
     action: string = ""
-    constructor(role: string, action: string) {
-        this.role = role;
+    constructor(module: string, action: string) {
+        this.module = module;
         this.action = action;
     }
 

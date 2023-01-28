@@ -10,18 +10,23 @@ import { ErrorTestModule }  from './errorTest/errorTest.module';
 import { LoggerModule } from './logger/logger.module';
 import { AuthMiddleware } from './middleware/authMiddleware';
 import { LoginModule } from './login/login.module';
+import { UserService } from './rbac/service/userService';
+import { RoleService } from './rbac/service/roleService';
+import { LoggerService } from './logger/logger.service';
+import { Role } from './entity/rbac/Role';
+
 
 @Module({
   imports: [
     AppDataSource,
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Role]),
     RBACModule,
     ErrorTestModule,
     LoggerModule,
     LoginModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, RoleService, UserService, LoggerService],
 })
 
 

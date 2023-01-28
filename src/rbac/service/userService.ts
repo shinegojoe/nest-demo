@@ -69,7 +69,7 @@ export class UserService {
     if(user === null) {
       return new NullObject();
     }
-    const sql = `select r."name" , r.id  from ${this.schema}.user_role ur  inner join ${this.schema}."role" r on ur.r_id = r.id and ur.u_id=$1`;
+    const sql = `select r."name" , r.id, r.module from ${this.schema}.user_role ur  inner join ${this.schema}."role" r on ur.r_id = r.id and ur.u_id=$1`;
     const roleList = await this.userRepository.query(sql, [id]);
     const vo = new UserRoleVO(user, roleList);
     return vo;

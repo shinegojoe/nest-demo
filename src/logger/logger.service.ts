@@ -14,7 +14,8 @@ export class LoggerService {
     loggerInit() {
         const date = new Date();
 
-        const fileName = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + "-" + "err.log";
+        const fileNameErr = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + "-" + "err.log";
+        const fileNameInfo = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + "-" + "info.log";
 
         const customFormat = printf(({ level, message, timestamp }) => {
             return `${timestamp} ${level}: ${message}`;
@@ -28,7 +29,9 @@ export class LoggerService {
             // defaultMeta: { service: 'user-service' },
             transports: [
                 new winston.transports.Console(),
-                new winston.transports.File({ filename: `log/${fileName}`, level: 'error' }),
+                new winston.transports.File({ filename: `log/${fileNameErr}`, level: 'error' }),
+                new winston.transports.File({ filename: `log/${fileNameInfo}`, level: 'info' }),
+
             ],
           });
         return logger;

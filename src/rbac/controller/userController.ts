@@ -36,12 +36,12 @@ export class UserController {
   @Get('/list')
   @ApiOperation(UserDoc.listApiOperation)
   @ApiResponse(UserDoc.listApiResponse)
-  @AuthDecorator(name, "qq", "action")
-  async list(): Promise<Array<Role>> {
+  @AuthDecorator(name, "moduleA", "view")
+  async list(): Promise<Array<User>> {
     // console.log("req: ", request.url);
     // req.session.uId = 123;
     console.log(controllerAuthMap);
-    const res: Array<Role> = await this.userService.list();
+    const res: Array<User> = await this.userService.list();
     return res;
   }
 
