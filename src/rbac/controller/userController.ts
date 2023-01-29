@@ -36,7 +36,7 @@ export class UserController {
   @Get('/list')
   @ApiOperation(UserDoc.listApiOperation)
   @ApiResponse(UserDoc.listApiResponse)
-  @AuthDecorator(name, "moduleA", "view")
+  // @AuthDecorator(name, "moduleA", "view")
   async list(): Promise<Array<User>> {
     // console.log("req: ", request.url);
     // req.session.uId = 123;

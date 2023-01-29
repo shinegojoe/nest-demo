@@ -42,12 +42,10 @@ describe('login controller ok test', () => {
 
     describe('root', () => {
         it('should return success response', async () => {
-            // const resp = new LogicErrorResponse(errorCode.NOT_FOUND, errorMessage[errorCode.NOT_FOUND], );
-            const resp = new SuccssResponse();
             const user = new User();
             const session = {};
             const res = await loginController.login(user, session);
-            expect(res).toEqual(resp);
+            expect(res).toEqual(user);
         });
 
         it('should return role', async () => {
@@ -65,7 +63,7 @@ describe('login controller ok test', () => {
 });
 
 
-describe('login controller ok test', () => {
+describe('login controller logic error test', () => {
     let loginController: LoginController;
 
     beforeEach(async () => {

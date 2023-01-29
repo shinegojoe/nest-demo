@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Request, Session } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Request, Session } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags, ApiBody } from "@nestjs/swagger";
 import { LoginDoc } from "../../doc/login/login";
 import { LogicErrorResponse, SuccssResponse } from '../../response/Resp';
@@ -27,7 +27,7 @@ export class LoginController {
             return new LogicErrorResponse(errorCode.NOT_FOUND, errorMessage[errorCode.NOT_FOUND], );
         } else {
             session.user = user;
-            return new SuccssResponse();
+            return user;
 
         }
 
@@ -40,6 +40,21 @@ export class LoginController {
     async logout(@Session() session) {
         await session.destroy();
         return new SuccssResponse();
+    }
+
+
+    @Get('/checkLogin')
+    checkLogin(@Session() session) {
+        const user = session.user;
+        console.log("user: ", user);
+        if(user === undefined) {
+            return new SuccssResponse();
+
+        } else {
+            return user;
+
+        }
+
     }
 
 }
