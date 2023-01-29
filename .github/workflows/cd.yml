@@ -24,6 +24,7 @@ jobs:
         script: |
           cd /home/server
           npm -v
+          rm -r build
           npm install
           npm run build
           pm2 restart nestServer
