@@ -22,7 +22,7 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: 22
         script: |
-          cd /home/serve
+          cd /home/server
           git pull origin main
           git status
           npm install --only=prod
