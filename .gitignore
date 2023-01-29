@@ -8,3 +8,5 @@ dist/
 error.log
 /log
 .env
+.env_dev
+.env_prod

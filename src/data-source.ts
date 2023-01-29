@@ -5,31 +5,27 @@ import { Action } from './entity/rbac/Action';
 import { Role } from './entity/rbac/Role';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Injectable } from "@nestjs/common";
+require('dotenv').config();
+
+const host: string = process.env.host;
+console.log("host: ", host);
+
+const username: string = process.env.username;
+const password: string = process.env.password;
+const db: string = process.env.db;
+const port: any = process.env.port;
+const schema: string = process.env.schema;
 
 
-// export const AppDataSource = new DataSource({
-//     type: "postgres",
-//     host: "192.168.161.131",
-//     port: 5432,
-//     username: "admin",
-//     password: "admin",
-//     database: "postgres",
-//     schema: "test123",
-//     synchronize: true,
-//     logging: false,
-//     entities: [User],
-//     migrations: [],
-//     subscribers: [],
-// })
 
 export const AppDataSource = TypeOrmModule.forRoot({
     type: "postgres",
-    host: "192.168.161.131",
-    port: 5432,
-    username: "admin",
-    password: "admin",
-    database: "postgres",
-    schema: "test123",
+    host: host,
+    port: port,
+    username: username,
+    password: password,
+    database: db,
+    schema: schema,
     synchronize: true,
     logging: false,
     entities: [User, Action, Role],
