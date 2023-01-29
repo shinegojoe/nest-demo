@@ -45,5 +45,5 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
-        source: "qq123.txt"
+        source: "build/*.*"
         target: "/home"
