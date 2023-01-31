@@ -1,5 +1,7 @@
-release:
-  needs: test
+deploy:
+  needs: [test]
+  runs-on: ubuntu-latest
+
   steps:
     - name: Deploy using ssh
       uses: appleboy/ssh-action@master
