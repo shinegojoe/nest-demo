@@ -10,11 +10,11 @@ require('dotenv').config();
 const host: string = process.env.host;
 console.log("host: ", host);
 
-const username: string = process.env.username;
-const password: string = process.env.password;
-const db: string = process.env.db;
-const port: any = process.env.port;
-const schema: string = process.env.schema;
+const username: string = process.env.USERNAME;
+const password: string = process.env.PASSWORD;
+const db: string = process.env.DB;
+const port: any = process.env.PORT;
+const schema: string = process.env.SCHEMA;
 
 
 
