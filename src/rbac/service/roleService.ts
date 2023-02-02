@@ -12,7 +12,7 @@ import { GetRoleActionVO } from '../vo/roleActionVO';
 @Injectable()
 export class RoleService {
 
-    schema: string = process.env.schema;
+    schema: string = process.env.SCHEMA;
 
     constructor(@InjectRepository(Role) private roleRepository: Repository<Role>) {
     }

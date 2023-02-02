@@ -94,25 +94,31 @@ export class UserController {
   @Delete('/delete/:id')
   async delete(@Param('id') id: number): Promise<DeleteResponse | LogicErrorResponse> {
     
-    // const queryRunner = this.dataSource.createQueryRunner();
-    // await queryRunner.connect();
-    // await queryRunner.startTransaction();
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    // try {
-    //   const res: boolean = await this.roleService.delete(id, queryRunner);
-    //   await queryRunner.commitTransaction();
-    //   return new DeleteResponse();
+    try {
+      const res: DeleteResult = await this.userService.deleteUser(id, queryRunner);
+      await queryRunner.commitTransaction();
+      if(res.affected ===0) {
+        return new LogicErrorResponse(errorCode.NO_AFFECTED, errorMessage[errorCode.NO_AFFECTED]);
+
+      } else {
+        return new DeleteResponse();
+
+      }
       
-    // } catch(e) {
-    //   this.logger.error(e);
-    //   await queryRunner.rollbackTransaction();
-    //   return new LogicErrorResponse(errorCode.ROLL_BACK, errorMessage[errorCode.ROLL_BACK]);
+    } catch(e) {
+      this.logger.error(e);
+      await queryRunner.rollbackTransaction();
+      return new LogicErrorResponse(errorCode.ROLL_BACK, errorMessage[errorCode.ROLL_BACK]);
 
 
-    // } finally {
-    //   await queryRunner.release();
+    } finally {
+      await queryRunner.release();
 
-    // }
+    }
     return;
 
   }

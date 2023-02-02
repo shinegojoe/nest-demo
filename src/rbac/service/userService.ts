@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 // import { AppDataSource } from './data-source'
 import { InjectRepository } from '@nestjs/typeorm';
-import { InsertResult, QueryRunner, Repository } from 'typeorm';
+import { DeleteResult, InsertResult, QueryRunner, Repository } from 'typeorm';
 import { DataSource } from 'typeorm';
 import { Module } from '@nestjs/core/injector/module';
 import { User } from '../../entity/rbac/User';
@@ -14,7 +14,7 @@ import { UserRoleVO } from '../vo/userRoleVO';
 @Injectable()
 export class UserService {
 
-  schema: string = process.env.schema;
+  schema: string = process.env.SCHEMA;
 
   constructor(@InjectRepository(User)
   private userRepository: Repository<User>) {
@@ -69,12 +69,24 @@ export class UserService {
     if(user === null) {
       return new NullObject();
     }
-    const sql = `select r."name" , r.id, r.module from ${this.schema}.user_role ur  inner join ${this.schema}."role" r on ur.r_id = r.id and ur.u_id=$1`;
+    const sql = `select r."name" , r.id, r.module from ${this.schema}.user_role ur inner join ${this.schema}."role" r on ur.r_id = r.id and ur.u_id=$1`;
     const roleList = await this.userRepository.query(sql, [id]);
     const vo = new UserRoleVO(user, roleList);
     return vo;
     
 
+  }
+
+  private async deleteUserRole(id: number, queryRunner: QueryRunner) {
+    const sql = `delete from ${this.schema}.user_role where u_id=$1`;
+    await queryRunner.manager.query(sql, [id]);
+  }
+
+  async deleteUser(id: number, queryRunner: QueryRunner): Promise<DeleteResult> {
+    // delete user_role, then delete user
+    await this.deleteUserRole(id, queryRunner);
+    const res: DeleteResult = await queryRunner.manager.delete(User, {id: id});
+    return res;
   }
 
 

@@ -6,7 +6,7 @@ import { Action } from '../../entity/rbac/Action';
 @Injectable()
 export class ActionService {
 
-  schema: string = process.env.schema;
+  schema: string = process.env.SCHEMA;
 
 
   constructor(@InjectRepository(Action)

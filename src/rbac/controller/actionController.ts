@@ -4,17 +4,22 @@ import { Action } from '../../entity/rbac/Action';
 import { DataSource, DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { ApiBody, ApiOperation, ApiParam, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LogicErrorResponse } from '../../response/Resp';
-import { errorCode } from '../../response/errorCode';
+import { errorCode, errorMessage } from '../../response/errorCode';
 // import { DeleteResponse, CreateResponse, UpdateResponse } from '../../../src/response/Resp';
 import { DeleteResponse, CreateResponse, UpdateResponse } from '../../response/Resp';
 import { ActionDoc } from '../../doc/rbac/action';
+import { LoggerService } from '../../logger/logger.service';
 
 const name = "action";
 
 @ApiTags(name)
 @Controller(`api/${name}`)
 export class ActionController {
-  constructor(private readonly actionService: ActionService, private dataSource: DataSource) { }
+  logger;
+  constructor(private readonly actionService: ActionService, private dataSource: DataSource,
+    private loggerService: LoggerService) {
+      this.logger = this.loggerService.getLogger();
+    }
 
 
   @Get('/list')
@@ -81,12 +86,16 @@ export class ActionController {
       const res: DeleteResult = await this.actionService.delete(id, queryRunner);
       await queryRunner.commitTransaction();
       if (res.affected === 0) {
-        return new LogicErrorResponse(errorCode.NO_AFFECTED, "action delete failed");
+        return new LogicErrorResponse(errorCode.NO_AFFECTED, errorMessage[errorCode.NO_AFFECTED]);
       } else {
         return new DeleteResponse();
       }
     } catch (e) {
       await queryRunner.rollbackTransaction();
+      this.logger.error(e);
+      
+      return new LogicErrorResponse(errorCode.ROLL_BACK, errorMessage[errorCode.ROLL_BACK]);
+
 
     } finally {
       await queryRunner.release();

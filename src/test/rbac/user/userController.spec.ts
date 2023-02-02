@@ -39,6 +39,12 @@ class MockUserService {
     return new UserRoleVO(user, []);
   }
 
+  deleteUser(id: number, q: QueryRunner) {
+    return {
+      affected: 1
+    }
+  }
+
 }
 
 class MockLogicErrorUserService {
@@ -57,6 +63,12 @@ class MockLogicErrorUserService {
 
   getRolesById(id: number) {
     return new NullObject();
+  }
+
+  deleteUser(id: number, q: QueryRunner) {
+    return {
+      affected: 0
+    }
   }
 
 }
@@ -126,6 +138,14 @@ describe('AppController ok test', () => {
       expect(res).toEqual(resp);
     });
 
+    it('should return DeleteResponse ', async () => {
+      const resp = new DeleteResponse();
+      const res = await userController.delete(123);
+      expect(res).toEqual(resp);
+    });
+
+
+
 
 
 
@@ -180,6 +200,12 @@ describe('AppController error test', () => {
       const resp = new LogicErrorResponse(errorCode.NOT_FOUND, errorMessage[errorCode.NOT_FOUND]);
       // const body = new SetUserRoleDTO();
       const res = await userController.getRoleActionListById(123);
+      expect(res).toEqual(resp);
+    });
+
+    it('should return Logic error response', async () => {
+      const resp = new LogicErrorResponse(errorCode.NO_AFFECTED, errorMessage[errorCode.NO_AFFECTED]);
+      const res = await userController.delete(123);
       expect(res).toEqual(resp);
     });
 

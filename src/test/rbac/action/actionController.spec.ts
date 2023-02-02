@@ -1,11 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ActionController } from '../../../rbac/controller/actionController';
 import { ActionService } from '../../../rbac/service/actionService';
-import { errorCode } from '../../../response/errorCode';
+import { errorCode, errorMessage } from '../../../response/errorCode';
 import { CreateResponse, DeleteResponse, LogicErrorResponse, UpdateResponse } from '../../../response/Resp';
 import { Action } from '../../../entity/rbac/Action';
 import { MockDataSource } from '../../common/mockDataSource';
 import { DataSource, QueryRunner } from 'typeorm';
+import { MockLoggerService } from '../../common/mockLogger';
+import { LoggerService } from '../../../logger/logger.service';
 
 
 
@@ -89,7 +91,9 @@ describe('action controller ok test', () => {
                 //   }
                 // },
                 { provide: ActionService, useClass: MockActionService },
-                { provide: DataSource, useClass: MockDataSource }
+                { provide: DataSource, useClass: MockDataSource },
+                { provide: LoggerService, useClass: MockLoggerService }
+
 
             ],
         }).compile();
@@ -142,7 +146,9 @@ describe('action controller logic error test', () => {
             controllers: [ActionController],
             providers: [
                 { provide: ActionService, useClass: MockActionLogicErrorService },
-                { provide: DataSource, useClass: MockDataSource }
+                { provide: DataSource, useClass: MockDataSource },
+                { provide: LoggerService, useClass: MockLoggerService }
+
 
             ],
         }).compile();
@@ -159,7 +165,8 @@ describe('action controller logic error test', () => {
         });
 
         it('should return no affected resp', async () => {
-            const resp = new LogicErrorResponse(errorCode.NO_AFFECTED, "action delete failed");
+            const resp = new LogicErrorResponse(errorCode.NO_AFFECTED, errorMessage[errorCode.NO_AFFECTED]); 
+
             const res = await actionController.delete(123);
             expect(res).toEqual(resp);
         });
