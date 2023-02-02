@@ -7,14 +7,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Injectable } from "@nestjs/common";
 require('dotenv').config();
 
-const host: string = process.env.host;
-console.log("host: ", host);
-
-const username: string = process.env.USERNAME;
-const password: string = process.env.PASSWORD;
+const host: string = process.env.HOST;
+const username: string = process.env.DBUSERNAME;
+const password: string = process.env.DBPASSWORD;
 const db: string = process.env.DB;
 const port: any = process.env.PORT;
 const schema: string = process.env.SCHEMA;
+console.log("host: ", host, " user: ", username, " db: ", db, " port: ", port, " schema: ", schema);
+
 
 
 
