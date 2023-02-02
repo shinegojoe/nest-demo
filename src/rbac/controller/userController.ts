@@ -17,11 +17,12 @@ import { AuthDecorator } from '../../decorator/authDecorator';
 import { Request } from 'supertest';
 import { controllerAuthMap } from '../../utils/controllerAuthMap';
 import { UserRoleVO, UserRoleActionVO } from '../vo/userRoleVO';
+import { AppDataSource } from '../../data-source'
 
 const name = "user";
 
 @ApiTags(name)
-@Controller(name)
+@Controller(`api/${name}`)
 export class UserController {
 
   private logger;
@@ -40,7 +41,7 @@ export class UserController {
   async list(): Promise<Array<User>> {
     // console.log("req: ", request.url);
     // req.session.uId = 123;
-    console.log(controllerAuthMap);
+    // console.log(controllerAuthMap);
     const res: Array<User> = await this.userService.list();
     return res;
   }
@@ -92,7 +93,7 @@ export class UserController {
   @ApiParam(UserDoc.deleteApiParam)
   @Delete('/delete/:id')
   async delete(@Param('id') id: number): Promise<DeleteResponse | LogicErrorResponse> {
-
+    
     // const queryRunner = this.dataSource.createQueryRunner();
     // await queryRunner.connect();
     // await queryRunner.startTransaction();

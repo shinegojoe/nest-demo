@@ -1,15 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository  } from '@nestjs/typeorm';
-import { DeleteResult, Repository, InsertResult, UpdateResult } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DeleteResult, Repository, InsertResult, UpdateResult, QueryRunner } from 'typeorm';
 import { Action } from '../../entity/rbac/Action';
 
 @Injectable()
 export class ActionService {
 
- constructor(@InjectRepository(Action)
- private usersRepository: Repository<Action>) {
+  schema: string = process.env.schema;
 
- }
+
+  constructor(@InjectRepository(Action)
+  private usersRepository: Repository<Action>) {
+
+  }
 
   async list(): Promise<Array<Action>> {
 
@@ -20,8 +23,8 @@ export class ActionService {
   }
 
   async get(id: number): Promise<Action> {
-    const res  = await this.usersRepository.findOneBy(
-      {id: id}
+    const res = await this.usersRepository.findOneBy(
+      { id: id }
     );
     return res;
   }
@@ -30,10 +33,10 @@ export class ActionService {
 
     // const r = AppDataSource.getRepository(User);
     const item = await this.usersRepository.findOneBy(
-      {name: body.name}
+      { name: body.name }
     );
     console.log("item: ", item);
-    if(item === null) {
+    if (item === null) {
       const res = await this.usersRepository.insert(body);
       console.log("create: ", res);
       return res;
@@ -50,15 +53,21 @@ export class ActionService {
     return res;
   }
 
-  async delete(id: number): Promise<DeleteResult> {
+  async delete(id: number, queryRunner: QueryRunner): Promise<DeleteResult> {
 
     // const r = AppDataSource.getRepository(User);
-    const res = await this.usersRepository.delete(id);
+    const res = await queryRunner.manager.delete(Action, {id: id});
     console.log("res: ", res);
     return res;
   }
 
+  async deleteRoleAction(id: number, queryRunner: QueryRunner): Promise<boolean> {
+    const sql = `delete from ${this.schema}.role_action where a_id=$1`;
+    const res = await queryRunner.query(sql, [id]);
+    return true;
+  }
 
 
-  
+
+
 }

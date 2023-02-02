@@ -5,7 +5,7 @@ import { LoggerService } from '../logger/logger.service';
 
 const name = "errorTest";
 
-@Controller(name)
+@Controller(`api/${name}`)
 export class ErrorTestController {
 
     

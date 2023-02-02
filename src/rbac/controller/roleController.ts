@@ -12,8 +12,10 @@ import { GetRoleActionVO } from '../vo/roleActionVO';
 import { NullObject } from '../../utils/NullObject';
 import { LoggerService } from '../../logger/logger.service';
 
-@ApiTags('role')
-@Controller('role')
+const name = "role";
+
+@ApiTags(name)
+@Controller(`api/${name}`)
 export class RoleController {
   private logger;
   constructor(private readonly roleService: RoleService, private dataSource: DataSource,

@@ -4,6 +4,8 @@ import { ActionService } from '../../../rbac/service/actionService';
 import { errorCode } from '../../../response/errorCode';
 import { CreateResponse, DeleteResponse, LogicErrorResponse, UpdateResponse } from '../../../response/Resp';
 import { Action } from '../../../entity/rbac/Action';
+import { MockDataSource } from '../../common/mockDataSource';
+import { DataSource, QueryRunner } from 'typeorm';
 
 
 
@@ -34,6 +36,10 @@ class MockActionService {
             raw: {}
         }
     }
+
+    deleteRoleAction(id: number, queryRunner: QueryRunner) {
+
+    }
 }
 
 class MockActionLogicErrorService {
@@ -58,6 +64,10 @@ class MockActionLogicErrorService {
         return null;
     }
 
+    deleteRoleAction(id: number, queryRunner: QueryRunner) {
+
+    }
+
 }
 
 describe('action controller ok test', () => {
@@ -78,7 +88,10 @@ describe('action controller ok test', () => {
                 //     })
                 //   }
                 // },
-                { provide: ActionService, useClass: MockActionService }],
+                { provide: ActionService, useClass: MockActionService },
+                { provide: DataSource, useClass: MockDataSource }
+
+            ],
         }).compile();
 
         actionController = app.get<ActionController>(ActionController);
@@ -128,7 +141,10 @@ describe('action controller logic error test', () => {
         const app: TestingModule = await Test.createTestingModule({
             controllers: [ActionController],
             providers: [
-                { provide: ActionService, useClass: MockActionLogicErrorService }],
+                { provide: ActionService, useClass: MockActionLogicErrorService },
+                { provide: DataSource, useClass: MockDataSource }
+
+            ],
         }).compile();
 
         actionController = app.get<ActionController>(ActionController);

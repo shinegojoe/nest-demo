@@ -10,7 +10,7 @@ import { errorCode, errorMessage } from "../../response/errorCode";
 const name = "login";
 
 @ApiTags(name)
-@Controller(name)
+@Controller(`api/${name}`)
 export class LoginController {
 
     constructor(private loginService: LoginService) {

@@ -55,7 +55,7 @@ export class RoleService {
     public async delete(id: number, queryRunner: QueryRunner): Promise<boolean> {
         // delete actions, then delete role
         await this.deleteActions(id, queryRunner);
-        queryRunner.manager.delete( Role, {id: id});
+        await queryRunner.manager.delete( Role, {id: id});
         return true;
     }
 

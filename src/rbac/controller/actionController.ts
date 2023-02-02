@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ActionService } from '../service/actionService';
 import { Action } from '../../entity/rbac/Action';
-import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
+import { DataSource, DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { ApiBody, ApiOperation, ApiParam, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LogicErrorResponse } from '../../response/Resp';
 import { errorCode } from '../../response/errorCode';
@@ -9,11 +9,12 @@ import { errorCode } from '../../response/errorCode';
 import { DeleteResponse, CreateResponse, UpdateResponse } from '../../response/Resp';
 import { ActionDoc } from '../../doc/rbac/action';
 
+const name = "action";
 
-@ApiTags('action')
-@Controller('action')
+@ApiTags(name)
+@Controller(`api/${name}`)
 export class ActionController {
-  constructor(private readonly actionService: ActionService) { }
+  constructor(private readonly actionService: ActionService, private dataSource: DataSource) { }
 
 
   @Get('/list')
@@ -43,7 +44,7 @@ export class ActionController {
   @Post('/create')
   async create(@Body() body: Action): Promise<CreateResponse | LogicErrorResponse> {
     const res: InsertResult = await this.actionService.create(body);
-    if(res === null) {
+    if (res === null) {
       return new LogicErrorResponse(errorCode.ALREADY_EXISTS, "action already exists");
 
     } else {
@@ -70,13 +71,27 @@ export class ActionController {
   @ApiParam(ActionDoc.deleteApiParam)
   @Delete('/delete/:id')
   async delete(@Param('id') id: number): Promise<DeleteResponse | LogicErrorResponse> {
-    const res: DeleteResult = await this.actionService.delete(id);
-    if (res.affected === 0) {
+    // delete role_action by aId
+    // delete action by id
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      await this.actionService.deleteRoleAction(id, queryRunner);
+      const res: DeleteResult = await this.actionService.delete(id, queryRunner);
+      await queryRunner.commitTransaction();
+      if (res.affected === 0) {
+        return new LogicErrorResponse(errorCode.NO_AFFECTED, "action delete failed");
+      } else {
+        return new DeleteResponse();
+      }
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
 
-      return new LogicErrorResponse(errorCode.NO_AFFECTED, "action delete failed");
-    } else {
-      return new DeleteResponse();
+    } finally {
+      await queryRunner.release();
     }
+
   }
 
 
