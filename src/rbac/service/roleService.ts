@@ -53,8 +53,9 @@ export class RoleService {
     }
 
     public async delete(id: number, queryRunner: QueryRunner): Promise<boolean> {
-        // delete actions, then delete role
-        await this.deleteActions(id, queryRunner);
+        // delete role_action, delete user_role, then delete role
+        await this.deleteRoleAction(id, queryRunner);
+        await this.deleteUserRole(id, queryRunner);
         await queryRunner.manager.delete( Role, {id: id});
         return true;
     }
@@ -88,8 +89,13 @@ export class RoleService {
         
     }
 
-    private deleteActions(rId: number, queryRunner: QueryRunner) {
+    private deleteRoleAction(rId: number, queryRunner: QueryRunner) {
         const sql = `delete from ${this.schema}.role_action where r_id=$1`;
+        return queryRunner.manager.query(sql, [rId]);
+    }
+
+    private deleteUserRole(rId: number, queryRunner: QueryRunner) {
+        const sql = `delete from ${this.schema}.user_role where r_id=$1`;
         return queryRunner.manager.query(sql, [rId]);
     }
 
@@ -100,7 +106,7 @@ export class RoleService {
         const role: Role = body.role;
         // const sql = `delete from ${this.schema}.role_action where r_id=$1`;
         // await queryRunner.manager.query(sql, [role.id]);
-        await this.deleteActions(role.id, queryRunner);
+        await this.deleteRoleAction(role.id, queryRunner);
         for(let aId of body.actionIdList) {
             await this.insertRoleAction(role.id, aId, queryRunner);
         }
