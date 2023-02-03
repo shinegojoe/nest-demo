@@ -68,18 +68,36 @@ class AuthMiddleware implements NestMiddleware {
     return resp;
   }
 
+  getAuthModel(url: string) {
+    // console.log("controllerAuthMap: ", controllerAuthMap);
+
+    let authModel = undefined;
+    for(let [k, v] of controllerAuthMap) {
+      // console.log("k: ", k);
+      if(url.includes(k)) {
+        authModel = v;
+        break;
+      }
+    }
+    return authModel;
+  }
+
   async use(req: Request, res: Response, next: NextFunction) {
     const session = req.session as any
     const user: User = session.user;
     const url = req.url.replace(" ", "");
+    // console.log("@@: ", req);
     if (this.whiteList.includes(url)) {
       this.writeLog(req, user, url, true);
       next();
       return;
     }
 
-
-    const authModel: AuthModel = controllerAuthMap.get(url);
+    // const authModel: AuthModel = controllerAuthMap.get(url);
+    const authModel: AuthModel = this.getAuthModel(url);
+    // console.log("controllerAuthMap: ", controllerAuthMap);
+    // console.log("url: ", url);
+    // console.log("authModel: ", authModel);
 
     if (authModel === undefined) {
       this.writeLog(req, user, url, true);
