@@ -45,6 +45,7 @@ jobs:
             cd /home/nest-demo
             npm -v
             rm -r build
+            git remote update
             git pull origin main
             npm install
             npm run build
