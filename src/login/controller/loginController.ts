@@ -7,10 +7,11 @@ import { User } from '../../entity/rbac/User';
 import { NullObject } from "../../utils/NullObject";
 import { errorCode, errorMessage } from "../../response/errorCode";
 
-const name = "login";
+const tagName = "login";
+const path = `api/${tagName}`;
 
-@ApiTags(name)
-@Controller(`api/${name}`)
+@ApiTags(tagName)
+@Controller(`${path}`)
 export class LoginController {
 
     constructor(private loginService: LoginService) {
@@ -24,7 +25,7 @@ export class LoginController {
     async login(@Body() body: User, @Session() session) {
         const user = await this.loginService.login(body);
         if(user instanceof NullObject) {
-            return new LogicErrorResponse(errorCode.NOT_FOUND, errorMessage[errorCode.NOT_FOUND], );
+            return new LogicErrorResponse(errorCode.NOT_FOUND, errorMessage[errorCode.NOT_FOUND]);
         } else {
             session.user = user;
             return user;

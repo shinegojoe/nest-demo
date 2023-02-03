@@ -10,10 +10,11 @@ import { DeleteResponse, CreateResponse, UpdateResponse } from '../../response/R
 import { ActionDoc } from '../../doc/rbac/action';
 import { LoggerService } from '../../logger/logger.service';
 
-const name = "action";
+const tagName = "action";
+const path = `api/${tagName}`
 
-@ApiTags(name)
-@Controller(`api/${name}`)
+@ApiTags(tagName)
+@Controller(`${path}`)
 export class ActionController {
   logger;
   constructor(private readonly actionService: ActionService, private dataSource: DataSource,

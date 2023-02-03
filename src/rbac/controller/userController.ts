@@ -19,10 +19,11 @@ import { controllerAuthMap } from '../../utils/controllerAuthMap';
 import { UserRoleVO, UserRoleActionVO } from '../vo/userRoleVO';
 import { AppDataSource } from '../../data-source'
 
-const name = "user";
+const tagName = "user";
+const path = `api/${tagName}`
 
-@ApiTags(name)
-@Controller(`api/${name}`)
+@ApiTags(tagName)
+@Controller(`${path}`)
 export class UserController {
 
   private logger;
