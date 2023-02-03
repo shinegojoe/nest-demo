@@ -42,7 +42,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: 22
           script: |
-            cd /home/server
+            cd /home/nest-demo
             npm -v
             rm -r build
             git pull origin main
