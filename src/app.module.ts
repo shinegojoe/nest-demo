@@ -1,6 +1,4 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entity/rbac/User';
 import { AppDataSource } from './data-source';
@@ -25,8 +23,8 @@ import { Role } from './entity/rbac/Role';
     LoggerModule,
     LoginModule
   ],
-  controllers: [AppController],
-  providers: [AppService, RoleService, UserService, LoggerService],
+  controllers: [],
+  providers: [RoleService, UserService, LoggerService],
 })
 
 
