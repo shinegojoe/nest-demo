@@ -17,7 +17,8 @@ import { AuthDecorator } from '../../decorator/authDecorator';
 import { Request } from 'supertest';
 import { controllerAuthMap } from '../../utils/controllerAuthMap';
 import { UserRoleVO, UserRoleActionVO } from '../vo/userRoleVO';
-import { AppDataSource } from '../../data-source'
+import { AppDataSource } from '../../data-source';
+
 
 const tagName = "user";
 const path = `api/${tagName}`
@@ -93,6 +94,7 @@ export class UserController {
   @ApiOperation(UserDoc.deleteApiOperation)
   @ApiParam(UserDoc.deleteApiParam)
   @Delete('/delete/:id')
+  @AuthDecorator(path, "user", "delete")
   async delete(@Param('id') id: number): Promise<DeleteResponse | LogicErrorResponse> {
     
     const queryRunner = this.dataSource.createQueryRunner();
