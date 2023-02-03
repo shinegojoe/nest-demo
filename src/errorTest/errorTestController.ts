@@ -1,14 +1,17 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpException, 
     HttpStatus, Param, Post, Put } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthDecorator } from '../decorator/authDecorator';
 import { LoggerService } from '../logger/logger.service';
 
-const name = "errorTest";
 
-@Controller(`api/${name}`)
+const name = "errorTest"
+const path = `api/${name}`;
+
+@ApiTags(name)
+@Controller(`${path}`)
 export class ErrorTestController {
 
-    
     logger
     constructor(private loggerSerivce: LoggerService) {
         this.logger = this.loggerSerivce.getLogger();
@@ -36,14 +39,14 @@ export class ErrorTestController {
     }
 
     @Get('/moduleA')
-    @AuthDecorator(name, "moduleA", "view")
+    @AuthDecorator(path, "moduleA", "view")
     moduleA() {
         return { data: "this is moduleA"};
     }
 
     @Get('/moduleB')
-    @AuthDecorator(name, "moduleA", "create")
+    @AuthDecorator(path, "moduleA", "create")
     moduleB() {
-        return { data: "this is moduleA"};
+        return { data: "this is moduleB"};
     }
 }
