@@ -14,8 +14,8 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('XXX example')
-    .setDescription('The XXX API description')
+    .setTitle('nest-demo example')
+    .setDescription('The nest-demo API description')
     .setVersion('1.0')
     // .addTag('cats')
     .build();
