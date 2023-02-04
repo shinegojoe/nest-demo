@@ -45,7 +45,7 @@ export class ErrorTestController {
     }
 
     @Get('/moduleB')
-    @AuthDecorator(path, "moduleA", "create")
+    @AuthDecorator(path, "moduleB", "create")
     moduleB() {
         return { data: "this is moduleB"};
     }
