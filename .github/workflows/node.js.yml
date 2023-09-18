@@ -42,7 +42,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: 22
           script: |
-            cd /home/project/nest-demo
+            cd /home/projects/nest-demo
             npm -v
             rm -r build
             git remote update
