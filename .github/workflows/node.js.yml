@@ -42,14 +42,14 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: 22
           script: |
-            cd /home/nest-demo
+            cd /home/project/nest-demo
             npm -v
             rm -r build
             git remote update
             git pull origin main
             npm install
             npm run build
-            pm2 restart nestServer
+            # pm2 restart nestServer
 
   # build:
   #   name: build
